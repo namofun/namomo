@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="SatelliteSite.Substrate" Version="$(SubstrateVersion)" />
+    <PackageReference Include="SatelliteSite.IdentityModule" Version="$(SubstrateVersion)" />
+    <PackageReference Include="SatelliteSite.GroupModule" Version="$(TenantVersion)" />
+    <PackageReference Include="SatelliteSite.PolygonModule" Version="$(PolygonVersion)" />
+    <PackageReference Include="SatelliteSite.ContestModule" Version="$(CcsVersion)" />
+    <PackageReference Include="SatelliteSite.BloggingModule" Version="$(BloggingVersion)" />
+    <PackageReference Include="SatelliteSite.PlagModule" Version="$(PlagVersion)" />
+    <PackageReference Include="Ccs.Connector.PlagiarismDetect" Version="$(CcsVersion)" />
+  </ItemGroup>
+
+</Project>

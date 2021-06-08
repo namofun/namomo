@@ -1,0 +1,41 @@
+﻿@using Ccs.Models
+@model IEnumerable<ContestListModel>
+@{
+    ViewData["Title"] = "Gyms";
+
+    string ContestState(ContestListModel c)
+    {
+        if (!c.StartTime.HasValue) return "table-primary";
+        if (DateTimeOffset.Now < c.StartTime) return "table-warning";
+        return "";
+    }
+}
+
+<h2 class="mt-2">@ViewData["Title"]</h2>
+
+<table class="table table-responsive-lg mt-3">
+    <thead>
+        <tr>
+            <th style="min-width:24em">Contest</th>
+            <th style="min-width:12em">Begin Time</th>
+            <th style="min-width:6.5em;text-align:center">Teams</th>
+            <th style="min-width:7.5em;text-align:center">Rule</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var contest in Model)
+        {
+            <tr class="@ContestState(contest)">
+                <td>
+                    <i asp-show-if="!contest.IsPublic" class="fas fa-eye-slash"></i>
+                    <a asp-action="Home" asp-controller="Gym" asp-area="Contest" asp-route-cid="@contest.ContestId">@(string.IsNullOrEmpty(contest.Name) ? "(unnamed)" : contest.Name)</a>
+                    <badge asp-show-if="contest.IsRegistered" color="success">registered</badge>
+                    <badge asp-show-if="contest.IsJury" color="primary">jury</badge>
+                </td>
+                <td>@Html.CstTime(contest.StartTime)</td>
+                <td align="center"><i class="fas fa-user"></i>&times;@contest.TeamCount</td>
+                <td align="center"><misc-status type="ContestRule" value="@contest.RankingStrategy" /></td>
+            </tr>
+        }
+    </tbody>
+</table>
