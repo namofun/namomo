@@ -23,7 +23,7 @@ namespace SatelliteSite
             Host.CreateDefaultBuilder(args)
                 .MarkDomain<PdsContext>()
                 .AddModule<PlagModule.PlagModule<Plag.Backend.StorageBackendRole<PdsContext>>>()
-                .AddDatabase<PdsContext>((c, b) => b.UseSqlServer(c.GetConnectionString("PlagDbConnection"), b => b.UseBulk()))
+                .AddDatabase<PdsContext>((c, b) => b.UseNpgsql(c.GetConnectionString("PlagDbConnection"), b => b.UseBulk()))
                 .ConfigureServices(services => services.ConfigureApplicationBuilder(options => options.PointBeforeEndpoint.Add(app => app.Use(FakeAuthorization))))
                 .ConfigureSubstrateDefaultsCore();
 
