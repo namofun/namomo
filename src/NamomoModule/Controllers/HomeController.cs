@@ -24,18 +24,18 @@ namespace SatelliteSite.NamomoModule.Controllers
         [HttpGet("/")]
         public async Task<IActionResult> Index(
             [FromServices] IContestRepository2 cts,
-            [FromServices] IBlogStore blogs)
+            [FromServices] IBloggingFacade blogs)
         {
             ViewBag.ActiveAction = "HomePage";
             ViewBag.CompileVersion = ProgramVersion;
             //ViewBag.Nearest = await cts.FindNearestAsync();
             //ViewBag.Ratings = await usr.ListUserRatingsAsync(10);
-            var model = await blogs.ListAsync(null, 5, 0);
+            var model = await blogs.Blogs.ListAsync(null, 5, 0);
 
             if (User.GetUserId() != null)
             {
                 var uuid = int.Parse(User.GetUserId());
-                ViewBag.PostsVote = await blogs.StatisticsAsync(model.Select(a => a.Id), uuid);
+                ViewBag.PostsVote = await blogs.Blogs.StatisticsAsync(model.Select(a => a.Id), uuid);
             }
 
             return View(model);

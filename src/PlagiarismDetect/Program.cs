@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SatelliteSite
@@ -30,6 +31,8 @@ namespace SatelliteSite
         static Task FakeAuthorization(HttpContext httpContext, Func<Task> next)
         {
             httpContext.Items["__AuthorizationMiddlewareWithEndpointInvoked"] = true;
+            var claimsIdentity = (ClaimsIdentity)httpContext.User.Identity;
+            claimsIdentity.AddClaim(new Claim(claimsIdentity.RoleClaimType, "PlagUser"));
             return next();
         }
     }
