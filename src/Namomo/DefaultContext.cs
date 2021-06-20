@@ -3,6 +3,8 @@ using Ccs.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.EntityFrameworkCore.Storage;
 using Polygon.Entities;
 using Polygon.Models;
 using Polygon.Storages;
@@ -21,6 +23,21 @@ namespace SatelliteSite
         IPolygonDbContext,
         IContestDbContext
     {
+        private static SqlFunctionExpression Builtin(
+            string name,
+            Type clrType,
+            RelationalTypeMapping dbType,
+            params SqlExpression[] arguments)
+            => new SqlFunctionExpression(
+                instance: null,
+                schema: null,
+                name: name,
+                niladic: false,
+                arguments: arguments,
+                builtIn: true,
+                type: clrType,
+                typeMapping: dbType);
+
         public DefaultContext(DbContextOptions<DefaultContext> options)
             : base(options)
         {
@@ -62,6 +79,28 @@ namespace SatelliteSite
         IQueryable<JudgingRun> IContestDbContext.JudgingRuns => JudgingRuns;
         IQueryable<Testcase> IContestDbContext.Testcases => Testcases;
         IQueryable<IUser> IContestDbContext.Users => Users;
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            // EXTRACT(EPOCH FROM INTERVAL '5 days 3 hours')
+            builder.HasDbFunction(typeof(QueryCache).GetMethod("ExtractEpochFromAge"), func =>
+            {
+                func.HasParameter("end")
+                    .HasStoreType("timestamp with time zone");
+
+                func.HasParameter("start")
+                    .HasStoreType("timestamp with time zone");
+
+                func.HasStoreType("double precision");
+
+                func.HasTranslation(exp =>
+                    Builtin("EXTRACT", typeof(double), new DoubleTypeMapping("double precision"),
+                        Builtin("EPOCH FROM AGE", typeof(TimeSpan), new TimeSpanTypeMapping("INTERVAL"),
+                            exp.ToArray())));
+            });
+        }
     }
 
     public class QueryCache : QueryCacheBase<DefaultContext>
@@ -88,7 +127,10 @@ namespace SatelliteSite
             return query.ToListAsync();
         }
 
+        public static double ExtractEpochFromAge(DateTimeOffset end, DateTimeOffset start)
+            => (end - start).TotalSeconds;
+
         protected override Expression<Func<DateTimeOffset, DateTimeOffset, double>> CalculateDuration { get; }
-            = (start, end) => (end - start).TotalSeconds;
+            = (start, end) => ExtractEpochFromAge(end, start);
     }
 }
