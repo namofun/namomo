@@ -11,10 +11,18 @@
     <PackageReference Include="SatelliteSite.IdentityModule" Version="$(SubstrateVersion)" />
     <PackageReference Include="SatelliteSite.GroupModule" Version="$(TenantVersion)" />
     <PackageReference Include="SatelliteSite.PolygonModule" Version="$(PolygonVersion)" />
-    <PackageReference Include="SatelliteSite.ContestModule" Version="$(CcsVersion)" />
     <PackageReference Include="SatelliteSite.BloggingModule" Version="$(BloggingVersion)" />
     <PackageReference Include="SatelliteSite.PlagModule" Version="$(PlagVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseCcsDevelopVersion)' != 'SourceCode'">
+    <PackageReference Include="SatelliteSite.ContestModule" Version="$(CcsVersion)" />
     <PackageReference Include="Ccs.Connector.PlagiarismDetect" Version="$(CcsVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseCcsDevelopVersion)' == 'SourceCode'">
+    <ProjectReference Include="$(CcsSolutionDirectory)src\Module\SatelliteSite.ContestModule.csproj" />
+    <ProjectReference Include="$(CcsSolutionDirectory)src\Connector.PDS\Ccs.Connector.PlagiarismDetect.csproj" />
   </ItemGroup>
 
 </Project>

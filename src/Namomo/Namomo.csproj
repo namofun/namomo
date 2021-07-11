@@ -11,7 +11,6 @@
     <PackageReference Include="Plag.Backend.Roles.Rest" Version="$(PlagVersion)" />
     <PackageReference Include="Polygon.DataAccess" Version="$(PolygonVersion)" />
     <PackageReference Include="Polygon.Seeds" Version="$(PolygonVersion)" />
-    <PackageReference Include="Ccs.Storage.Relational" Version="$(CcsVersion)" />
 
     <PackageReference Include="SatelliteSite.Substrate" Version="$(SubstrateVersion)" />
     <PackageReference Include="SatelliteSite.HostBuilder" Version="$(SubstrateVersion)" />
@@ -28,6 +27,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NamomoModule\SatelliteSite.NamomoModule.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseCcsDevelopVersion)' != 'SourceCode'">
+    <PackageReference Include="Ccs.Storage.Relational" Version="$(CcsVersion)" />
+    <PackageReference Include="Ccs.Connector.PlagiarismDetect" Version="$(CcsVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseCcsDevelopVersion)' == 'SourceCode'">
+    <ProjectReference Include="$(CcsSolutionDirectory)src\EntityFrameworkCore\Ccs.Storage.Relational.csproj" />
   </ItemGroup>
 
 </Project>

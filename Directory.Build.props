@@ -1,13 +1,17 @@
 ﻿<Project>
   <PropertyGroup>
-    <UseDevelopVersion>True</UseDevelopVersion>
     <GitRepositoryDirectory>$(MSBuildThisFileDirectory).git</GitRepositoryDirectory>
     <AspNetCoreVersion>3.1.15</AspNetCoreVersion>
     <NpgsqlVersion>3.1.11</NpgsqlVersion>
     <SubstrateVersion>1.0.39</SubstrateVersion>
     <EFCoreBulkVersion>3.1.26</EFCoreBulkVersion>
+
+    <!-- Dev for CCS: SourceCode/DevPackage/False -->
     <CcsVersion>1.0.14</CcsVersion>
-    <CcsVersion Condition="'$(UseDevelopVersion)' == 'True'">0.0.351-d60ce8f</CcsVersion>
+    <UseCcsDevelopVersion>DevPackage</UseCcsDevelopVersion>
+    <CcsSolutionDirectory>$(MSBuildThisFileDirectory)..\ccs\</CcsSolutionDirectory>
+    <CcsVersion Condition="'$(UseCcsDevelopVersion)' != 'False'">0.0.351-d60ce8f</CcsVersion>
+
     <PolygonVersion>1.0.19</PolygonVersion>
     <PlagVersion>1.2.20</PlagVersion>
     <TenantVersion>1.0.13</TenantVersion>
