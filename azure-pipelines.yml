@@ -14,7 +14,7 @@ variables:
   - name: ccsPackageType
     value: 'False'
 
-- ${{ if !startsWith(variables['Build.SourceBranch'], 'refs/tags/') }}:
+- ${{ if not(startsWith(variables['Build.SourceBranch'], 'refs/tags/')) }}:
   - name: ccsPackageType
     value: 'DevPackage'
 
