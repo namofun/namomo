@@ -1,0 +1,47 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- main
+
+variables:
+- name: buildConfiguration
+  value: 'Release'
+
+- ${{ if startsWith(variables['Build.SourceBranch'], 'refs/tags/') }}:
+  - name: ccsPackageType
+    value: 'False'
+
+- ${{ if !startsWith(variables['Build.SourceBranch'], 'refs/tags/') }}:
+  - name: ccsPackageType
+    value: 'DevPackage'
+
+jobs:
+- job: Build
+  displayName: "Create Deployment Artifacts"
+
+  pool:
+    vmImage: ubuntu-latest
+
+  steps:
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: 'echo "ref: $(Build.SourceBranch)" > $(Build.SourcesDirectory)/.git/ADO_OVERRIDE_HEAD'
+    displayName: 'Set Source Branch'
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'build'
+      projects: 'src/PlagiarismDetect/PlagiarismDetect.csproj'
+      arguments: '-c=$(buildConfiguration)'
+    displayName: 'Build Plagiarism Detect Service'
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'build'
+      projects: 'src/Namomo/Namomo.csproj'
+      arguments: '-c=$(buildConfiguration) -p:UseCcsDevelopVersion=$(ccsPackageType)'
+    displayName: 'Build Contest Control Service'
