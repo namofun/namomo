@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <Target Name="_CcsDevelopVersionIndication" BeforeTargets="BeforeBuild">
-    <Message Text="Using CCS package type: $(UseCcsDevelopVersion)" Importance="high" />
+    <Warning Text="Using CCS package type: $(UseCcsDevelopVersion)" />
   </Target>
 
   <PropertyGroup>

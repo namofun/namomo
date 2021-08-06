@@ -38,7 +38,6 @@ jobs:
       publishWebProjects: false
       projects: 'src/PlagiarismDetect/PlagiarismDetect.csproj'
       arguments: '-c=$(buildConfiguration)'
-      zipAfterPublish: false
     displayName: 'Build PlagDetectSvc'
 
   - task: DotNetCoreCLI@2
@@ -47,19 +46,19 @@ jobs:
       publishWebProjects: false
       projects: 'src/Namomo/Namomo.csproj'
       arguments: '-c=$(buildConfiguration) -p:UseCcsDevelopVersion=$(ccsPackageType)'
-      zipAfterPublish: false
     displayName: 'Build ContestCtrlSys'
 
-  - task: PublishBuildArtifacts@1
+  - task: Bash@3
     inputs:
-      PathtoPublish: '$(Build.sourcesdirectory)/src/PlagiarismDetect/bin/Release/netcoreapp3.1/publish'
-      ArtifactName: 'pds-drop'
-      publishLocation: 'Container'
-    displayName: 'Publish Artifacts'
+      targetType: 'inline'
+      script: |
+        mv $(Build.sourcesdirectory)/src/PlagiarismDetect/bin/Release/netcoreapp3.1/publish.zip $(Build.ArtifactStagingDirectory)/pds.zip
+        mv $(Build.sourcesdirectory)/src/Namomo/bin/Release/netcoreapp3.1/publish.zip $(Build.ArtifactStagingDirectory)/ccs.zip
+    displayName: 'Copy Artifacts'
 
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '$(Build.sourcesdirectory)/src/Namomo/bin/Release/netcoreapp3.1/publish'
-      ArtifactName: 'ccs-drop'
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'drop'
       publishLocation: 'Container'
     displayName: 'Publish Artifacts'
