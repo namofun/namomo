@@ -48,6 +48,13 @@ jobs:
       arguments: '-c=$(buildConfiguration) -p:UseCcsDevelopVersion=$(ccsPackageType)'
     displayName: 'Build ContestCtrlSys'
 
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        mv $(Build.sourcesdirectory)/src/PlagiarismDetect/bin/Release/netcoreapp3.1/publish.zip $(Build.ArtifactStagingDirectory)/pds.zip
+        mv $(Build.sourcesdirectory)/src/Namomo/bin/Release/netcoreapp3.1/publish.zip $(Build.ArtifactStagingDirectory)/ccs.zip
+
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
