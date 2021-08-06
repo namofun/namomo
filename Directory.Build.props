@@ -8,7 +8,7 @@
 
     <!-- Dev for CCS: SourceCode/DevPackage/False -->
     <CcsVersion>1.0.14</CcsVersion>
-    <UseCcsDevelopVersion>DevPackage</UseCcsDevelopVersion>
+    <UseCcsDevelopVersion>SourceCode</UseCcsDevelopVersion>
     <CcsSolutionDirectory>$(MSBuildThisFileDirectory)..\ccs\</CcsSolutionDirectory>
     <CcsVersion Condition="'$(UseCcsDevelopVersion)' != 'False'">0.0.351-d60ce8f</CcsVersion>
 
