@@ -34,14 +34,16 @@ jobs:
 
   - task: DotNetCoreCLI@2
     inputs:
-      command: 'build'
+      command: 'publish'
+      publishWebProjects: false
       projects: 'src/PlagiarismDetect/PlagiarismDetect.csproj'
       arguments: '-c=$(buildConfiguration)'
-    displayName: 'Build Plagiarism Detect Service'
+    displayName: 'Build PlagDetectSvc'
 
   - task: DotNetCoreCLI@2
     inputs:
-      command: 'build'
+      command: 'publish'
+      publishWebProjects: false
       projects: 'src/Namomo/Namomo.csproj'
       arguments: '-c=$(buildConfiguration) -p:UseCcsDevelopVersion=$(ccsPackageType)'
-    displayName: 'Build Contest Control Service'
+    displayName: 'Build ContestCtrlSys'
