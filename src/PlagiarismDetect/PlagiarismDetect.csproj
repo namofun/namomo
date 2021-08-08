@@ -10,6 +10,7 @@
     <PackageReference Include="Plag.Backend.Roles.Storage" Version="$(PlagVersion)" />
     <PackageReference Include="SatelliteSite.PlagModule" Version="$(PlagVersion)" />
     <PackageReference Include="SatelliteSite.Substrate" Version="$(SubstrateVersion)" />
+    <PackageReference Include="SatelliteSite.TelemetryModule" Version="$(SubstrateVersion)" />
     <PackageReference Include="SatelliteSite.HostBuilder" Version="$(SubstrateVersion)" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(NpgsqlVersion)" />
     <PackageReference Include="XiaoYang.EntityFrameworkCore.Bulk.PostgreSql" Version="$(EFCoreBulkVersion)" />
