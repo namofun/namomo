@@ -10,7 +10,7 @@
     <CcsVersion>1.0.14</CcsVersion>
     <UseCcsDevelopVersion>SourceCode</UseCcsDevelopVersion>
     <CcsSolutionDirectory>$(MSBuildThisFileDirectory)..\ccs\</CcsSolutionDirectory>
-    <CcsVersion Condition="'$(UseCcsDevelopVersion)' != 'False'">0.0.351-d60ce8f</CcsVersion>
+    <CcsVersion Condition="'$(UseCcsDevelopVersion)' != 'False'">0.0.403-57454b8</CcsVersion>
 
     <PolygonVersion>1.0.19</PolygonVersion>
     <PlagVersion>1.2.20</PlagVersion>

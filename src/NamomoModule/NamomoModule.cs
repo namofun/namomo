@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SatelliteSite.NamomoModule.Services;
 
 namespace SatelliteSite.NamomoModule
 {
@@ -24,6 +26,8 @@ namespace SatelliteSite.NamomoModule
             {
                 options.ShortenedClaimName = true;
             });
+
+            services.ReplaceScoped<IUserInformationProvider, RatedUserInformationProvider>();
         }
 
         public override void RegisterMenu(IMenuContributor menus)

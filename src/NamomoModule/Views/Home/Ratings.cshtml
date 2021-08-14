@@ -1,0 +1,30 @@
+﻿@model List<Ccs.Models.RatingListModel>
+@{
+    ViewData["Title"] = "Top rated";
+    Layout = "_WindowLayout";
+    int pg = ViewBag.Page;
+}
+
+<table class="data-table text-center table table-hover table-striped table-sm" role="grid">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">user</th>
+            <th scope="col">rating</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var (user, id) in Model.Select((i, j) => (i, j - 99 + pg * 100)))
+        {
+            <tr>
+                <td>@id</td>
+                <td><user username="@user.ItemName" attach-explicit-rating="@user.Rating" /></td>
+                <td>@user.Rating</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Footer {
+    <pagination bs-current-page="pg" />
+}
