@@ -1,44 +1,103 @@
 ﻿@using Ccs.Models
-@model IEnumerable<ContestListModel>
+@model IPagedList<ContestListModel>
 @{
     ViewData["Title"] = "Contests";
+    ViewData["UseCardTheme"] = true;
+}
 
-    string ContestState(ContestListModel c)
+@functions {
+    static string ContestState(ContestListModel c)
     {
-        if (!c.StartTime.HasValue) return "table-primary";
-        if (DateTimeOffset.Now < c.StartTime) return "table-warning";
-        if (DateTimeOffset.Now < (c.StartTime + c.Duration)) return "table-success";
-        return "";
+        if (!c.StartTime.HasValue) return "primary";
+        if (DateTimeOffset.Now < c.StartTime) return "warning";
+        if (DateTimeOffset.Now < c.StartTime + c.Duration) return "success";
+        return "secondary";
+    }
+
+    static string ContestState2(ContestListModel c)
+    {
+        if (c.Kind == Ccs.CcsDefaults.KindProblemset) return "open";
+        if (!c.StartTime.HasValue) return "scheduling";
+        if (DateTimeOffset.Now < c.StartTime) return "pending";
+        if (DateTimeOffset.Now < c.StartTime + c.Duration) return "running";
+        return "finished";
+    }
+
+    static string ContestKind(ContestListModel c)
+    {
+        return c.Kind switch
+        {
+            0 => "Contest",
+            1 => "Practice",
+            2 => "Problemset",
+            _ => "Unknown",
+        };
+    }
+
+    static string ContestRule(ContestListModel c)
+    {
+        return c.RankingStrategy switch
+        {
+            0 => "ACM-ICPC",
+            1 => "IOI",
+            2 => "Codeforces",
+            _ => "Unknown",
+        };
     }
 }
 
-<h2 class="mt-2">@ViewData["Title"]</h2>
+<div class="row">
+<div class="container card-container">
 
-<table class="table table-responsive-lg mt-3">
-    <thead>
-        <tr>
-            <th style="min-width:24em">Contest</th>
-            <th style="min-width:12em">Begin Time</th>
-            <th style="min-width:7.5em;text-align:center">Length</th>
-            <th style="min-width:6.5em;text-align:center">Teams</th>
-            <th style="min-width:7.5em;text-align:center">Rule</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var contest in Model)
-        {
-            <tr class="@ContestState(contest)">
-                <td>
-                    <i asp-show-if="!contest.IsPublic" class="fas fa-eye-slash"></i>
-                    <a asp-action="Home" asp-controller="DomPublic" asp-area="Contest" asp-route-cid="@contest.ContestId">@(string.IsNullOrEmpty(contest.Name) ? "(unnamed)" : contest.Name)</a>
-                    <badge asp-show-if="contest.IsRegistered" color="success">registered</badge>
-                    <badge asp-show-if="contest.IsJury" color="primary">jury</badge>
-                </td>
-                <td>@Html.CstTime(contest.StartTime)</td>
-                <td align="center">@(contest.Duration)</td>
-                <td align="center"><i class="fas fa-user"></i>&times;@contest.TeamCount</td>
-                <td align="center"><misc-status type="ContestRule" value="@contest.RankingStrategy" /></td>
-            </tr>
-        }
-    </tbody>
+<div class="card window-card container-fluid">
+<div class="card-body">
+<h2>Contests</h2>
+<div class="card-table">
+<table class="table table-hover mb-0">
+<thead style="display:table-header-group">
+    <tr role="row">
+        <th scope="col" style="min-width:17em">name</th>
+        <th scope="col" style="min-width:13em">time</th>
+        <th scope="col" style="min-width:10em" class="d-none d-md-table-cell">details</th>
+    </tr>
+</thead>
+<tbody>
+@foreach (var cts in Model)
+{
+    <tr data-toggle="gotoUrlV2" data-href="@Url.Action("Home", "DomPublic", new { area = "Contest", cid = cts.ContestId })">
+        <td>
+            <i class="fas fa-info-circle text-@ContestState(cts)" title="@ContestState2(cts)"></i> @ContestKind(cts) @cts.ShortName
+            <badge asp-show-if="cts.IsRegistered" color="success">registered</badge>
+            <badge asp-show-if="cts.IsJury" color="primary">jury</badge>
+            <br />
+            @(string.IsNullOrEmpty(cts.Name) ? "(unnamed)" : cts.Name)
+        </td>
+        <td>
+            <span title="start time"><i class="far fa-calendar-alt fa-fw"></i> @(cts.StartTime.HasValue ? Html.CstTime(cts.StartTime) : "N/A")</span>
+            <br />
+            <span title="duration"><i class="far fa-clock fa-fw"></i> +@(cts.Duration?.ToString() ?? "N/A")</span>
+        </td>
+        <td class="d-none d-md-table-cell">
+            <span title="# teams" class="mr-2"><i class="far fa-user fa-fw"></i> @cts.TeamCount</span>
+            <span title="# problems"><i class="far fa-file-pdf fa-fw"></i> @cts.ProblemCount</span>
+            <br />
+            <span title="rule"><i class="far fa-futbol fa-fw"></i> @ContestRule(cts)</span>
+        </td>
+    </tr>
+}
+@if (Model.Count == 0)
+{ 
+    <tr>
+        <td colspan="3" class="text-md-center">
+            No data available in table
+        </td>
+    </tr>
+}
+</tbody>
 </table>
+</div>
+</div>
+</div>
+
+</div>
+</div>

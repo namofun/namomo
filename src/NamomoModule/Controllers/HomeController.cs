@@ -31,7 +31,7 @@ namespace SatelliteSite.NamomoModule.Controllers
             ViewBag.ActiveAction = "HomePage";
             ViewBag.CompileVersion = ProgramVersion;
             //ViewBag.Nearest = await cts.FindNearestAsync();
-            var model = await blogs.Blogs.ListAsync(null, 5, 0);
+            var model = await blogs.Blogs.ListAsync(null, 3, 0);
 
             if (User.GetUserId() != null)
             {
@@ -67,22 +67,10 @@ namespace SatelliteSite.NamomoModule.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Problemsets([FromServices] IContestRepository2 store, int page = 1)
-        {
-            ViewData["ActiveAction"] = "Problemset";
-
-            return View(
-                await store.ListAsync(User, Ccs.CcsDefaults.KindProblemset, page));
-        }
-
-
-        [HttpGet]
         public async Task<IActionResult> Contests([FromServices] IContestRepository2 store, int page = 1)
         {
             ViewData["ActiveAction"] = "ListContest";
-
-            return View(
-                await store.ListAsync(User, Ccs.CcsDefaults.KindDom, page));
+            return View(await store.ListAsync(User, Ccs.CcsDefaults.KindDom, page));
         }
 
 

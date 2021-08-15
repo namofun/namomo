@@ -38,6 +38,11 @@ namespace SatelliteSite.NamomoModule
                     .HasTitle("fas fa-home", "Home")
                     .HasLink("/")
                     .ActiveWhenViewData("HomePage");
+
+                menu.HasEntry(300)
+                    .HasTitle("fas fa-trophy", "Contests")
+                    .HasLink("/contests")
+                    .ActiveWhenViewData("ListContest");
             });
         }
 

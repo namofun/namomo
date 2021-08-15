@@ -5,26 +5,37 @@
     int pg = ViewBag.Page;
 }
 
-<table class="data-table text-center table table-hover table-striped table-sm" role="grid">
-    <thead class="thead-light">
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">user</th>
-            <th scope="col">rating</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var (user, id) in Model.Select((i, j) => (i, j - 99 + pg * 100)))
-        {
-            <tr>
-                <td>@id</td>
-                <td><user username="@user.ItemName" attach-explicit-rating="@user.Rating" /></td>
-                <td>@user.Rating</td>
+<style>
+    .card-body > hr { display: none; }
+    .card-table > table > thead { display: table-header-group; }
+    .window-card > .card-body .panel-bottom { margin-top: 0.5em; }
+</style>
+
+<div class="card-table mb-0">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr role="row">
+                <th scope="col">#</th>
+                <th scope="col">name</th>
+                <th scope="col">rating</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var (user, id) in Model.Select((i, j) => (i, j - 99 + pg * 100)))
+            {
+                <tr data-toggle="gotoUrlV2" data-href="@Url.RouteUrl("AccountProfile", new { username = user.ItemName })">
+                    <td>@id</td>
+                    <td><user username="@user.ItemName" attach-explicit-rating="@user.Rating" /></td>
+                    <td>@user.Rating</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 
 @section Footer {
-    <pagination bs-current-page="pg" />
+    <div class="card-pagination">
+        <pagination bs-current-page="pg" class="mb-0 justify-content-md-center" />
+    </div>
 }

@@ -2,8 +2,6 @@
 @model List<BlogPost>
 @{
     ViewData["Title"] = "Home Page";
-    ViewData["HasFooter"] = true;
-    ViewData["CompactMode"] = true;
     ViewData["UseCardTheme"] = true;
     //List<Contest> near = ViewBag.Nearest;
     List<Ccs.Models.RatingListModel> ratings = ViewBag.Ratings;
@@ -11,77 +9,17 @@
 }
 
 @section Banner {
-    
-<link rel="stylesheet" href="/lib/site-blog/main.css" />
+    <link rel="stylesheet" href="/lib/site-blog/main.css" />
+    <link rel="stylesheet" href="/lib/namomo/fabric-icons-index.css" />
     <style type="text/css">
-        .jumbotron {
-            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-        }
-
-        .highlight {
-            padding: 1rem;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-            background-color: #f8f9fa;
-            -ms-overflow-style: -ms-autohiding-scrollbar;
-        }
-
+        body { padding-top: 3.5rem; }
+        .jumbotron { margin-bottom: .5rem; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"; }
+        .highlight { padding: 1rem; margin-top: 1rem; margin-bottom: 1rem; background-color: #f8f9fa; -ms-overflow-style: -ms-autohiding-scrollbar; }
         @@media (min-width: 576px) {
-            .highlight {
-                padding: 1.5rem;
-            }
+            .highlight { padding: 1.5rem; }
         }
-
-        .highlight pre {
-            padding: 0;
-            margin-top: 0;
-            margin-bottom: 0;
-            background-color: transparent;
-            border: 0;
-        }
-
-            .highlight pre code {
-                font-size: inherit;
-                color: #212529;
-            }
-
-        .bd-footer {
-            font-size: 85%;
-            text-align: center;
-            background-color: #f7f7f7;
-        }
-
-            .bd-footer a {
-                font-weight: 500;
-                color: #495057;
-            }
-
-                .bd-footer a:hover, .bd-footer a:focus {
-                    color: #007bff;
-                }
-
-            .bd-footer p {
-                margin-bottom: 0;
-            }
-
-        .bd-footer-links {
-            padding-left: 0;
-            margin-bottom: 1rem;
-        }
-
-            .bd-footer-links li {
-                display: inline-block;
-            }
-
-                .bd-footer-links li + li {
-                    margin-left: 1rem;
-                }
-
-        @@media all and (min-width:768px) {
-            .bd-footer {
-                text-align: left;
-            }
-        }
+        .highlight pre { padding: 0; margin-top: 0; margin-bottom: 0; background-color: transparent; border: 0; }
+        .highlight pre code { font-size: inherit; color: #212529; }
     </style>
 
     <div class="jumbotron">
@@ -98,13 +36,20 @@
 }
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-8 card-container">
-            <!--<div class="alert alert-warning">Test round is running!</div>-->
-            <partial name="/Areas/Blog/Views/Shared/BlogList.cshtml" model="@Model" />
-            <p class="mb-4 text-right"><a asp-area="Blog" asp-action="List" asp-controller="Blog">View more &raquo;</a></p>
-        </div>
-        <div class="col-md-4 card-container">
+<div class="row">
+<div class="col-lg-8 card-container">
+
+<!--<div class="alert alert-warning">Test round is running!</div>-->
+<partial name="/Areas/Blog/Views/Shared/BlogList.cshtml" model="@Model" />
+
+<div class="card window-card container-fluid">
+    <div class="card-body pt-0 pb-0 pt-sm-3 pb-sm-3">
+        <p class="text-right mb-0"><a asp-area="Blog" asp-action="List" asp-controller="Blog">View more &raquo;</a></p>
+    </div>
+</div>
+
+</div>
+<div class="col-lg-4 card-container">
 
             @*foreach (var ctx in near)
         {
@@ -149,49 +94,62 @@
                 </div>
             </div>
         }*@
-            <div class="card window-card container-fluid">
-                <div class="card-body">
-                    <h2>
-                        <a asp-action="Ratings" class="text-decoration-none text-reset">Top rated</a>
-                    </h2>
-                    <div class="card-table">
-                        <table class="table table-hover mb-md-0">
-                            <thead>
-                                <tr role="row">
-                                    <th scope="col">#</th>
-                                    <th scope="col">name</th>
-                                    <th scope="col">rating</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var (user, id) in ratings.Select((i, j) => (i, j + 1)))
-                                {
-                                    <tr data-toggle="gotoUrlV2" data-href="@Url.RouteUrl("AccountProfile", new { username = user.ItemName })">
-                                        <td>@id</td>
-                                        <td><user username="@user.ItemName" attach-explicit-rating="@user.Rating" /></td>
-                                        <td>@user.Rating</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+<div class="card window-card container-fluid">
+    <div class="card-body">
+        <h2>
+            <a asp-action="Ratings" class="text-decoration-none text-reset">Top rated</a>
+        </h2>
+        <div class="card-table">
+            <table class="table table-hover mb-sm-0">
+                <thead style="display:table-header-group">
+                    <tr role="row">
+                        <th scope="col">#</th>
+                        <th scope="col">name</th>
+                        <th scope="col">rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var (user, id) in ratings.Select((i, j) => (i, j + 1)))
+                    {
+                        <tr data-toggle="gotoUrlV2" data-href="@Url.RouteUrl("AccountProfile", new { username = user.ItemName })">
+                            <td>@id</td>
+                            <td><user username="@user.ItemName" attach-explicit-rating="@user.Rating" /></td>
+                            <td>@user.Rating</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-@section BannerFooter {
-    <!-- #footer start -->
-    <footer class="bd-footer text-muted">
-        <div class="container-fluid p-3 p-md-5">
-            <ul class="bd-footer-links">
-                <li><a asp-area="Misc" asp-controller="Home" asp-action="About">About</a></li>
-                <li><a href="http://www.beian.miit.gov.cn/" rel="external nofollow">浙ICP备xxxxxxxx号-1</a></li>
-            </ul>
-            <p>Version @(ViewData["CompileVersion"]) on <a href="//dotnet.microsoft.com/" rel="nofollow">.NET Core 3.1</a>.</p>
-            <p>Hosted on <a href="//www.aliyun.com/" rel="nofollow">Aliyun Elastic Compute Service</a>.</p>
+<div class="card window-card container-fluid">
+    <div class="card-body" id="about-links">
+        <h2>
+            Service status
+        </h2>
+        <style>
+            .health-item { margin-top: 5px; margin-bottom: 5px; }
+            .health-title, .health-item-span { padding-left: 5px; }
+            #about-links .ms-Icon { vertical-align: bottom; }
+            #about-links a { color: inherit; padding: 5px; border-radius: 5px; }
+            #about-links a:hover { text-decoration: none; color: rgba(0,90,158,1); background-color: rgba(0,0,0,.06); }
+        </style>
+        <div class="mb-2" style="margin-left:-5px">
+            <p class="mb-0 health-title"><b style="line-height:2">Version</b></p>
+            <p class="mb-0 health-item health-item-span" title="instance role"><i class="ms-Icon ms-Icon--HardDriveGroup fa-fw"></i> Namomo</p>
+            <p class="mb-0 health-item health-item-span" title="version"><i class="ms-Icon ms-Icon--OpenSource fa-fw"></i> <span class="filename">@(ViewData["CompileVersion"])</span></p>
+            <p class="mb-0 health-item health-item-span" title="runtime"><i class="ms-Icon ms-Icon--CSharp fa-fw"></i> .NET Core 3.1</p>
         </div>
-    </footer>
-    <!-- #footer end -->
-}
+        <div class="mb-0" style="margin-left:-5px">
+            <p class="mb-0 health-title"><b style="line-height:2">Links</b></p>
+            <p class="mb-0 health-item"><a asp-action="About"><i class="ms-Icon ms-Icon--Diagnostic fa-fw"></i> About Us</a></p>
+            <p class="mb-0 health-item"><a href="https://github.com/namofun" rel="nofollow"><i class="ms-Icon ms-Icon--TestBeaker fa-fw"></i> Open Source</a></p>
+            <p class="mb-0 health-item"><a href="http://www.beian.miit.gov.cn/" rel="external nofollow"><i class="ms-Icon ms-Icon--SingleBookmark fa-fw"></i> 浙ICP备xxxxxxxx号-1</a></p>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+</div>

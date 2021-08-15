@@ -100,7 +100,7 @@ namespace SatelliteSite.NamomoModule.Services
             TagHelperContext context,
             TagHelperOutput output)
         {
-            output.AddClass(RankClass(evermore), HtmlEncoder.Default);
+            output.Attributes.AddClass("rank-show " + RankClass(evermore));
             return base.ProduceAsync(evermore, username, attach, actionContext, context, output);
         }
     }
