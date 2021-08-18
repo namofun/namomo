@@ -3,7 +3,7 @@
     <GitRepositoryDirectory>$(MSBuildThisFileDirectory).git</GitRepositoryDirectory>
     <AspNetCoreVersion>3.1.15</AspNetCoreVersion>
     <NpgsqlVersion>3.1.11</NpgsqlVersion>
-    <SubstrateVersion>1.0.40</SubstrateVersion>
+    <SubstrateVersion>1.0.41</SubstrateVersion>
     <EFCoreBulkVersion>3.1.26</EFCoreBulkVersion>
 
     <!-- Dev for CCS: SourceCode/DevPackage/False -->
@@ -15,6 +15,6 @@
     <PolygonVersion>1.0.19</PolygonVersion>
     <PlagVersion>1.2.20</PlagVersion>
     <TenantVersion>1.0.13</TenantVersion>
-    <BloggingVersion>1.1.13</BloggingVersion>
+    <BloggingVersion>1.1.14</BloggingVersion>
   </PropertyGroup>
 </Project>

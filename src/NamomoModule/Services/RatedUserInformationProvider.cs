@@ -3,10 +3,7 @@ using Ccs.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Collections.Generic;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace SatelliteSite.NamomoModule.Services
@@ -24,30 +21,6 @@ namespace SatelliteSite.NamomoModule.Services
         {
             _cache = cache;
             _userManager = userManager;
-        }
-
-        protected override Task<(int?, string)?> GetUserAsync(int userId, string? userName)
-        {
-            return _cache.GetByUserIdAsync(
-                userId,
-                async uid =>
-                {
-                    var user = await _userManager.FindByIdAsync(uid);
-                    if (user == null) return null;
-                    return user == null ? default((int?, string)?) : (((IUserWithRating)user).Rating, user.UserName);
-                });
-        }
-
-        protected override Task<(int?, string)?> GetUserAsync(string userName)
-        {
-            return _cache.GetByUserNameAsync(
-                userName,
-                async uname =>
-                {
-                    var user = await _userManager.FindByNameAsync(uname);
-                    if (user == null) return null;
-                    return user == null ? default((int?, string)?) : (((IUserWithRating)user).Rating, user.UserName);
-                });
         }
 
         public static string RankClass(int? _rk)
@@ -92,16 +65,94 @@ namespace SatelliteSite.NamomoModule.Services
             };
         }
 
-        protected override Task ProduceAsync(
+        protected override ValueTask ProduceAsync(
+            TagBuilder tag,
             int? evermore,
-            string username,
+            string? username,
             IReadOnlyDictionary<string, string> attach,
-            ViewContext actionContext,
-            TagHelperContext context,
-            TagHelperOutput output)
+            ViewContext actionContext)
         {
-            output.Attributes.AddClass("rank-show " + RankClass(evermore));
-            return base.ProduceAsync(evermore, username, attach, actionContext, context, output);
+            tag.AddCssClass("rank-show " + RankClass(evermore));
+            return base.ProduceAsync(tag, evermore, username, attach, actionContext);
+        }
+
+        private static bool ParseExplicitRating(
+            IReadOnlyDictionary<string, string> attach,
+            out int? rating)
+        {
+            if (!attach.TryGetValue("explicit-rating", out var ratingStr))
+            {
+                rating = default;
+                return false;
+            }
+            else if (ratingStr == "null" || ratingStr == "none")
+            {
+                rating = default;
+                return true;
+            }
+            else if (int.TryParse(ratingStr, out var ratingInt))
+            {
+                rating = ratingInt;
+                return true;
+            }
+            else
+            {
+                rating = default;
+                return false;
+            }
+        }
+
+        protected override async ValueTask<(int?, string)?> GetUserAsync(
+            int userId,
+            string? userName,
+            IReadOnlyDictionary<string, string> attach)
+        {
+            bool hasUserName = userName != null;
+            bool hasRating = ParseExplicitRating(attach, out int? firstRating);
+            (int?, string)? current = default;
+
+            if (!hasUserName || !hasRating)
+            {
+                current = await _cache.GetByUserIdAsync(
+                    userId,
+                    async uid =>
+                    {
+                        var user = await _userManager.FindByIdAsync(uid);
+                        return user == null
+                            ? default((int?, string)?)
+                            : (((IUserWithRating)user).Rating, user.UserName);
+                    });
+
+                if (!current.HasValue) return default;
+            }
+
+            string? finalUserName = hasUserName ? userName : current?.Item2;
+            int? finalRating = hasRating ? firstRating : current?.Item1;
+            return (finalRating, finalUserName!);
+        }
+
+        protected override ValueTask<(int?, string)?> GetUserAsync(string userName, IReadOnlyDictionary<string, string> attach)
+        {
+            if (userName == null)
+            {
+                return default;
+            }
+            else if (ParseExplicitRating(attach, out int? firstRating))
+            {
+                return new ValueTask<(int?, string)?>((firstRating, userName));
+            }
+            else
+            {
+                return _cache.GetByUserNameAsync(
+                    userName,
+                    async uname =>
+                    {
+                        var user = await _userManager.FindByNameAsync(uname);
+                        return user == null
+                            ? default((int?, string)?)
+                            : (((IUserWithRating)user).Rating, user.UserName);
+                    });
+            }
         }
     }
 }
